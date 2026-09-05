@@ -5,8 +5,26 @@ export default function Layout({ children }) {
   return (
     <div className={styles.container}>
       <header className={styles.topBrand}>
-        <h1>ResearchLens</h1>
-        <p>Evidence-Grounded Research Intelligence</p>
+        <div>
+          <h1>ResearchLens</h1>
+          <p>Evidence-Grounded Research Intelligence</p>
+        </div>
+        <button 
+          onClick={() => {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+          }}
+          style={{
+            background: 'transparent', 
+            border: '1px solid #4a5d4e', 
+            color: '#4a5d4e', 
+            padding: '4px 12px', 
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Logout
+        </button>
       </header>
       
       <main className={styles.main}>

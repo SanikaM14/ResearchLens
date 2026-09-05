@@ -14,7 +14,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from app.core.config import get_settings
 from app.core.database import init_db
-from app.api.routes import documents, research, health
+from app.api.routes import documents, research, health, auth
 
 # ─────────────────────────────────────────────
 # Logging Configuration
@@ -33,12 +33,7 @@ logger = logging.getLogger("researchlens")
 
 settings = get_settings()
 
-# Rate limiter — per IP address
-limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=[f"{settings.RATE_LIMIT_PER_MINUTE}/minute"],
-    storage_uri="memory://",
-)
+from app.core.limiter import limiter
 
 
 @asynccontextmanager
@@ -70,6 +65,9 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+from fastapi.staticfiles import StaticFiles
+app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+
 # ─────────────────────────────────────────────
 # Middleware
 # ─────────────────────────────────────────────
@@ -90,7 +88,7 @@ app.add_middleware(
 # ─────────────────────────────────────────────
 # Routes
 # ─────────────────────────────────────────────
-
+app.include_router(auth.router)
 app.include_router(health.router)
 app.include_router(documents.router)
 app.include_router(research.router)

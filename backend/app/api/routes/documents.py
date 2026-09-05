@@ -7,11 +7,12 @@ import logging
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.core.database import get_db, Document, DocumentStatus, AsyncSessionLocal
+from app.core.database import get_db, Document, DocumentStatus, AsyncSessionLocal, User
+from app.api.routes.auth import get_current_user
 from app.core.security import validate_pdf_file, generate_safe_filename, compute_file_hash, validate_document_id
 from app.core.config import get_settings
 from app.models.schemas import DocumentUploadResponse, DocumentListItem, DocumentListResponse, DocumentDetail
-from app.services.pdf_service import extract_text_by_page, validate_pdf
+from app.services.pdf_service import extract_text_by_page_async, validate_pdf
 from app.services.chunking_service import chunk_document
 from app.services.vector_store_service import add_document_chunks, delete_document_vectors, get_document_chunk_count
 import aiofiles
@@ -35,7 +36,7 @@ async def _process_document(doc_id: str, file_path: str, original_name: str):
                 raise ValueError(f"Invalid PDF: {pdf_info['error']}")
             
             # 2. Extract text page by page
-            pages = extract_text_by_page(file_path)
+            pages = await extract_text_by_page_async(file_path)
             
             if not pages or all(p.is_empty for p in pages):
                 raise ValueError("PDF contains no extractable text.")
@@ -83,14 +84,21 @@ async def _process_document(doc_id: str, file_path: str, original_name: str):
                 logger.error(f"Failed to update document status for {doc_id}")
 
 
+from app.core.limiter import limiter
+from fastapi import Request
+
 @router.post("/upload", response_model=DocumentUploadResponse, status_code=201)
+@limiter.limit("5/minute")
 async def upload_document(
+    request: Request,
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """
     Upload and ingest a research paper PDF.
+
     
     - Validates file type, magic bytes, and size
     - Saves with UUID-based safe filename (never uses original filename as path)
@@ -108,9 +116,11 @@ async def upload_document(
     # Ensure upload directory exists
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     
-    # Stream file to disk with size enforcement
+    # Stream file to disk with size enforcement and compute hash
     file_size = 0
     max_bytes = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+    import hashlib
+    sha256 = hashlib.sha256()
     
     try:
         async with aiofiles.open(file_path, 'wb') as out_file:
@@ -126,6 +136,7 @@ async def upload_document(
                         detail=f"File too large. Maximum allowed size is {settings.MAX_UPLOAD_SIZE_MB}MB."
                     )
                 await out_file.write(chunk)
+                sha256.update(chunk)
     except HTTPException:
         raise
     except Exception as e:
@@ -134,12 +145,33 @@ async def upload_document(
         logger.error(f"File upload failed: {e}")
         raise HTTPException(status_code=500, detail="File upload failed. Please try again.")
     
+    file_hash = sha256.hexdigest()
+    
+    # Check for duplicate document
+    result = await db.execute(select(Document).where(Document.file_hash == file_hash, Document.user_id == current_user.id))
+    existing_doc = result.scalars().first()
+    
+    if existing_doc:
+        # Clean up the newly uploaded duplicate file
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        return DocumentUploadResponse(
+            id=existing_doc.id,
+            original_name=existing_doc.original_name,
+            status=existing_doc.status.value,
+            total_pages=existing_doc.total_pages,
+            file_size=existing_doc.file_size,
+            upload_time=existing_doc.upload_time,
+        )
+    
     # Create document record
     doc = Document(
+        user_id=current_user.id,
         original_name=file.filename,
         safe_filename=safe_filename,
         file_size=file_size,
         status=DocumentStatus.processing,
+        file_hash=file_hash, # We set it early since we computed it
     )
     db.add(doc)
     await db.commit()
@@ -159,9 +191,9 @@ async def upload_document(
 
 
 @router.get("", response_model=DocumentListResponse)
-async def list_documents(db: AsyncSession = Depends(get_db)):
+async def list_documents(db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     """List all uploaded documents with their ingestion status."""
-    result = await db.execute(select(Document).order_by(Document.upload_time.desc()))
+    result = await db.execute(select(Document).where(Document.user_id == current_user.id).order_by(Document.upload_time.desc()))
     docs = result.scalars().all()
     
     items = [
@@ -180,12 +212,12 @@ async def list_documents(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/{document_id}", response_model=DocumentDetail)
-async def get_document(document_id: str, db: AsyncSession = Depends(get_db)):
+async def get_document(document_id: str, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Get detailed metadata for a specific document."""
     validate_document_id(document_id)
     
     doc = await db.get(Document, document_id)
-    if not doc:
+    if not doc or doc.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Document not found.")
     
     return DocumentDetail(
@@ -200,7 +232,7 @@ async def get_document(document_id: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.delete("/{document_id}")
-async def delete_document(document_id: str, db: AsyncSession = Depends(get_db)):
+async def delete_document(document_id: str, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Delete a document and all associated data:
     - Remove PDF file from disk
@@ -210,7 +242,7 @@ async def delete_document(document_id: str, db: AsyncSession = Depends(get_db)):
     validate_document_id(document_id)
     
     doc = await db.get(Document, document_id)
-    if not doc:
+    if not doc or doc.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Document not found.")
     
     settings = get_settings()

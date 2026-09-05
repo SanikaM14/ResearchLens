@@ -1,0 +1,144 @@
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-image: url("/logo.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  align-items: center;
+  justify-content: center;
+  /* Make sure background color matches in case image doesn't load immediately */
+  background-color: #f9f6f0; 
+  font-family: 'Playfair Display', 'Merriweather', 'Times New Roman', serif;
+}
+
+.auth-card {
+  /* Frosted glass effect */
+  background: rgba(253, 248, 240, 0.7); /* translucent warm off-white */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.auth-logo {
+  width: 100%;
+  max-width: 200px;
+  margin-bottom: 1.5rem;
+  object-fit: contain;
+  /* Multiply blend mode removes the white background of the JPEG, making it transparent against the card */
+  mix-blend-mode: multiply;
+}
+
+.auth-title {
+  font-size: 1.4rem;
+  color: #222;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.auth-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: #333;
+  font-weight: 600;
+  text-align: left;
+}
+
+.form-group input {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background-color: #e8ecf8; /* Pale blue from screenshot */
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3b4e41;
+  box-shadow: 0 0 0 2px rgba(59, 78, 65, 0.2);
+}
+
+.auth-button {
+  background-color: #3a4a3e; /* Dark green from screenshot */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.auth-button:hover {
+  background-color: #2c382f;
+}
+
+.auth-button:disabled {
+  background-color: #8fa093;
+  cursor: not-allowed;
+}
+
+.auth-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.auth-links a {
+  color: #3a4a3e;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+.auth-links a:hover {
+  color: #2c382f;
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #b33939;
+  background-color: #fbeded; /* Light red/pink */
+  border: 1px solid #f5caca;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}

@@ -139,17 +139,11 @@ def analyze_document(document_id: str, document_name: str = "Document") -> Analy
     analysis_sections = []
     key_metrics = []
     
-    with concurrent.futures.ThreadPoolExecutor(max_workers=9) as executor:
-        section_futures = {executor.submit(process_section, s): i for i, s in enumerate(ANALYSIS_SECTIONS)}
-        metrics_future = executor.submit(process_metrics)
-        
-        # Collect sections in original order
-        results = [None] * len(ANALYSIS_SECTIONS)
-        for future in concurrent.futures.as_completed(section_futures):
-            results[section_futures[future]] = future.result()
+    
+    for section_def in ANALYSIS_SECTIONS:
+        analysis_sections.append(await process_section(section_def))
             
-        analysis_sections = results
-        key_metrics = metrics_future.result()
+    key_metrics = await process_metrics()
 
     return AnalysisResponse(
         document_name=document_name,
@@ -159,7 +153,7 @@ def analyze_document(document_id: str, document_name: str = "Document") -> Analy
     )
 
 
-def compare_papers(document_ids: List[str], question: str) -> CompareResponse:
+async def compare_papers(document_ids: List[str], question: str) -> CompareResponse:
     """
     Compare multiple research papers by retrieving evidence separately per document.
     Sources are never mixed — each claim is attributed to its specific paper.
@@ -179,7 +173,7 @@ def compare_papers(document_ids: List[str], question: str) -> CompareResponse:
         per_paper_citations[doc_name] = citations
     
     # Generate comparison
-    comparison_result = generate_comparison(question, per_paper_evidence)
+    comparison_result = await generate_comparison(question, per_paper_evidence)
     
     return CompareResponse(
         answer=comparison_result.get("answer", ""),
@@ -189,7 +183,7 @@ def compare_papers(document_ids: List[str], question: str) -> CompareResponse:
     )
 
 
-def verify_claim(document_id: str, claim: str, document_name: str = "Document") -> ClaimVerifyResponse:
+async def verify_claim(document_id: str, claim: str, document_name: str = "Document") -> ClaimVerifyResponse:
     """
     Verify whether a specific claim is supported by the research paper.
     Retrieves evidence and classifies as SUPPORTED, PARTIALLY_SUPPORTED, or NOT_CLEARLY_SUPPORTED.
@@ -201,21 +195,36 @@ def verify_claim(document_id: str, claim: str, document_name: str = "Document") 
     evidence_for_llm = [c.model_dump() for c in citations]
     
     # Generate verification
-    result = generate_claim_verification(claim, evidence_for_llm)
+    result = await generate_claim_verification(claim, evidence_for_llm)
     
     # Separate supporting vs contradicting evidence based on verdict
     verdict = result.get("verdict", "NOT_CLEARLY_SUPPORTED")
-    if verdict == "SUPPORTED":
-        supporting = citations
-        contradicting = []
-    elif verdict == "PARTIALLY_SUPPORTED":
-        # Split evidence — top half as supporting, rest as context
-        mid = max(1, len(citations) // 2)
-        supporting = citations[:mid]
-        contradicting = citations[mid:]
+    
+    # Using indices provided by LLM if available
+    supp_idx = result.get("supporting_indices", [])
+    contra_idx = result.get("contradicting_indices", [])
+    
+    supporting = []
+    contradicting = []
+    
+    if supp_idx or contra_idx:
+        for i, c in enumerate(citations, 1):
+            if i in supp_idx:
+                supporting.append(c)
+            elif i in contra_idx:
+                contradicting.append(c)
     else:
-        supporting = []
-        contradicting = citations
+        # Fallback
+        if verdict == "SUPPORTED":
+            supporting = citations
+            contradicting = []
+        elif verdict == "PARTIALLY_SUPPORTED":
+            mid = max(1, len(citations) // 2)
+            supporting = citations[:mid]
+            contradicting = citations[mid:]
+        else:
+            supporting = []
+            contradicting = citations
     
     return ClaimVerifyResponse(
         verdict=verdict,
@@ -225,7 +234,7 @@ def verify_claim(document_id: str, claim: str, document_name: str = "Document") 
         processing_time_ms=round((time.time() - start) * 1000, 2),
     )
 
-def create_podcast(document_id: str, document_name: str = "Document") -> Dict[str, Any]:
+async def create_podcast(document_id: str, document_name: str = "Document") -> Dict[str, Any]:
     """
     Generate a podcast script from a paper.
     """
@@ -240,7 +249,7 @@ def create_podcast(document_id: str, document_name: str = "Document") -> Dict[st
     
     evidence_for_llm = [c.model_dump() for c in citations]
     
-    script = generate_podcast_script(document_name, evidence_for_llm)
+    script = await generate_podcast_script(document_name, evidence_for_llm)
     
     return {
         "document_name": document_name,

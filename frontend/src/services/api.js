@@ -7,9 +7,23 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 async function fetchWithHandler(url, options = {}) {
+  const token = localStorage.getItem('token');
+  const headers = options.headers ? new Headers(options.headers) : new Headers();
+  
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  
+  const updatedOptions = { ...options, headers };
+
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(url, updatedOptions);
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        throw new Error('Session expired. Please log in again.');
+      }
       let errorMsg = `Error ${response.status}: ${response.statusText}`;
       try {
         const errorData = await response.json();

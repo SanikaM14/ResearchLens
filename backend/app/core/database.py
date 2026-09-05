@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy import Column, String, Integer, DateTime, Enum
+from sqlalchemy import Column, String, Integer, DateTime, Enum, text
 import uuid
 import datetime
 from app.core.config import get_settings
@@ -24,6 +24,7 @@ class DocumentStatus(str, enum.Enum):
 class Document(Base):
     __tablename__ = 'documents'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String(36), index=True, nullable=True) # Added for auth ownership
     original_name = Column(String, nullable=False)
     safe_filename = Column(String, nullable=False)
     upload_time = Column(DateTime, default=datetime.datetime.utcnow)
@@ -36,13 +37,23 @@ class Document(Base):
 class AnalysisHistory(Base):
     __tablename__ = 'analysis_history'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String(36), index=True, nullable=True) # Added for auth ownership
     document_id = Column(String(36), nullable=False)
     analysis_type = Column(String, nullable=False)
     query = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    username = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
 async def init_db():
     async with engine.begin() as conn:
+        # Enable WAL for better SQLite concurrency
+        await conn.execute(text("PRAGMA journal_mode=WAL;"))
         await conn.run_sync(Base.metadata.create_all)
 
 async def get_db():
