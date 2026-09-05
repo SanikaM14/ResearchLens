@@ -1,0 +1,126 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-4xl);
+}
+
+.dropZone {
+  border: 2px solid var(--border-default);
+  padding: var(--space-4xl) var(--space-2xl);
+  text-align: center;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.dropZone::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: -8px;
+  bottom: -8px;
+  background-color: var(--color-primary);
+  z-index: -1;
+  transition: all 0.2s ease;
+}
+
+.dropZone:hover:not(.hasFile)::after {
+  transform: translate(4px, 4px);
+}
+
+.dragging {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.dragging p, .dragging span {
+  color: var(--text-inverse);
+}
+
+.hasFile {
+  cursor: default;
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.uploadIcon {
+  font-size: 42px;
+  margin-bottom: var(--space-sm);
+}
+
+.prompt p {
+  font-weight: 700;
+  font-size: 24px;
+  font-family: var(--font-heading);
+  color: inherit;
+}
+
+.prompt span {
+  color: inherit;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  text-align: left;
+  color: var(--text-inverse);
+  width: 100%;
+}
+
+.icon {
+  font-size: 32px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileName {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.fileSize {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  opacity: 0.8;
+}
+
+.removeBtn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--text-inverse);
+  color: var(--text-inverse);
+  cursor: pointer;
+  padding: var(--space-sm) var(--space-lg);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.removeBtn:hover {
+  background-color: var(--text-inverse);
+  color: var(--text-primary);
+}
+
+.uploadBtn {
+  align-self: flex-start;
+  margin-top: var(--space-lg);
+  background-color: var(--color-success);
+}

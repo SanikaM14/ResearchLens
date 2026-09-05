@@ -1,0 +1,130 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 120px; /* space for bottom nav */
+}
+
+.topBrand {
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.topBrand h1 {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+  letter-spacing: -0.5px;
+}
+
+.topBrand p {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  padding: 0 var(--space-md);
+}
+
+.bottomNav {
+  position: fixed;
+  bottom: var(--space-2xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 90%;
+  max-width: 500px;
+}
+
+.navInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-radius: 40px;
+  padding: 0 var(--space-xl);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  height: 70px;
+  position: relative;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #A0A0A0;
+  width: 60px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.navItem i {
+  font-size: 22px;
+  margin-bottom: 2px;
+}
+
+.navItem span {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--font-body);
+}
+
+.active {
+  color: var(--text-primary);
+}
+
+/* The dot indicator for active state */
+.active::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  width: 4px;
+  height: 4px;
+  background-color: var(--text-primary);
+  border-radius: 50%;
+}
+
+/* Center CTA */
+#centerCta {
+  width: auto;
+}
+
+#centerCta::after {
+  display: none;
+}
+
+.ctaCircle {
+  width: 60px;
+  height: 60px;
+  background-color: var(--text-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-inverse);
+  position: relative;
+  top: -20px; /* raised */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+.ctaCircle i {
+  font-size: 24px;
+  margin-bottom: 0;
+}
+
+#centerCta:hover .ctaCircle {
+  transform: translateY(-4px);
+}

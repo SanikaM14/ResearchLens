@@ -1,0 +1,85 @@
+.card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  background-color: var(--bg-surface);
+  position: relative;
+}
+
+.summary:hover {
+  background-color: var(--bg-hover);
+}
+
+.indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--color-primary);
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.scoreBar {
+  width: 60px;
+  height: 4px;
+  background-color: var(--border-default);
+  border-radius: 2px;
+  margin: 0 var(--space-md);
+  overflow: hidden;
+}
+
+.scoreFill {
+  height: 100%;
+  background-color: var(--color-primary);
+}
+
+.toggleBtn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  padding: var(--space-md);
+  background-color: var(--bg-evidence);
+  border-top: 1px solid var(--border-default);
+}
+
+.text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}

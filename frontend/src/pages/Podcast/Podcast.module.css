@@ -1,0 +1,155 @@
+.podcast {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionNumber {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.header h2 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.select {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  background-color: var(--background);
+}
+
+.generateBtn {
+  min-width: 200px;
+}
+
+.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.playerContainer {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.audioControls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.playBtn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.playBtn:hover {
+  background-color: var(--primary-dark);
+  transform: scale(1.02);
+}
+
+.helperText {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+}
+
+.scriptArea {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dialogueLine {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: var(--background);
+  border-left: 4px solid transparent;
+}
+
+.dialogueLine:hover {
+  background-color: #f1f5f9;
+}
+
+.activeLine {
+  background-color: #e0f2fe;
+  border-left: 4px solid var(--primary);
+  transform: translateX(4px);
+}
+
+.speaker {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.host1 .speaker {
+  color: var(--primary);
+}
+
+.host2 .speaker {
+  color: #0ea5e9;
+}
+
+.text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}

@@ -1,0 +1,110 @@
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: var(--space-4xl);
+}
+
+.titleSection {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-md);
+  border-bottom: 2px solid var(--border-default);
+  padding-bottom: var(--space-md);
+}
+
+.sectionNumber {
+  font-family: var(--font-heading);
+  font-size: 80px;
+  color: var(--text-primary);
+  line-height: 0.8;
+}
+
+.titleSection h2 {
+  font-size: 42px;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  letter-spacing: -1px;
+}
+
+.statsBar {
+  display: flex;
+  gap: var(--space-3xl);
+  background-color: transparent;
+  padding: var(--space-xl) 0;
+  margin-bottom: var(--space-3xl);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.statLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+  font-weight: 600;
+}
+
+.statValue {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.libraryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+}
+
+.libraryHeader h3 {
+  font-size: 28px;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.refreshBtn {
+  background: none;
+  border: 1px solid var(--border-default);
+  font-size: 14px;
+  cursor: pointer;
+  padding: var(--space-xs) var(--space-sm);
+  transition: all 0.2s ease;
+}
+
+.refreshBtn:hover {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-xl);
+}
+
+.emptyState {
+  text-align: left;
+  padding: var(--space-xl) 0;
+  color: var(--text-secondary);
+  border-top: 1px dashed var(--border-default);
+  border-bottom: 1px dashed var(--border-default);
+}
+
+.error {
+  color: var(--text-inverse);
+  padding: var(--space-md);
+  background-color: var(--color-danger);
+  margin-bottom: var(--space-lg);
+  font-weight: 600;
+}

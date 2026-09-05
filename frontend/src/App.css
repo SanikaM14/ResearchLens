@@ -1,0 +1,5 @@
+/* Minimal reset for App */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}

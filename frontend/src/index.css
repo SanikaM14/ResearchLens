@@ -1,0 +1,138 @@
+:root {
+  /* Backgrounds */
+  --bg-primary: #F7F3EB;        /* Warm cream, exactly like the reference */
+  --bg-surface: #F7F3EB;        /* No white cards, blend into background */
+  --bg-sidebar: #F7F3EB;        /* No dark sidebar */
+  --bg-evidence: #EBE6DC;       /* Slightly darker cream for contrast areas */
+  --bg-hover: #EBE6DC;
+  
+  /* Brand Colors (Solid blocks like the reference) */
+  --color-primary: #1C52A5;     /* Bold blue */
+  --color-success: #2E9B4F;     /* Bold green */
+  --color-warning: #F5A623;     /* Bold amber */
+  --color-danger: #D0021B;      /* Bold red */
+  
+  /* Text */
+  --text-primary: #111111;      /* Deep black for high contrast */
+  --text-secondary: #4A4A4A;    /* Dark gray for body */
+  --text-tertiary: #888888;
+  --text-inverse: #F7F3EB;      /* Cream text on color blocks */
+  
+  /* Borders */
+  --border-default: #111111;    /* Sharp black borders */
+  --border-accent: #111111;
+  
+  /* Shadows - REMOVED for flat editorial look */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  
+  /* Typography */
+  /* The reference uses a very distinctive serif for headings and clean sans-serif for small text */
+  --font-heading: 'DM Serif Display', 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+  
+  /* Border Radius - REMOVED for sharp editorial blocks */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-primary);
+}
+
+/* Global Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: normal;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Global utility classes */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  padding: var(--space-md) var(--space-xl);
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background-color: var(--text-primary);
+}
+
+.btn-primary:disabled {
+  background-color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+/* Inputs and Selects */
+input, select, textarea {
+  background-color: transparent;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  padding: var(--space-md);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-primary);
+  border-width: 2px;
+  padding: calc(var(--space-md) - 1px);
+}

@@ -1,0 +1,254 @@
+.workspace {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: var(--space-2xl);
+  flex-shrink: 0;
+}
+
+.titleSection {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-md);
+  border-bottom: 2px solid var(--border-default);
+  padding-bottom: var(--space-md);
+}
+
+.sectionNumber {
+  font-family: var(--font-heading);
+  font-size: 80px;
+  color: var(--text-primary);
+  line-height: 0.8;
+}
+
+.titleSection h2 {
+  font-size: 42px;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  letter-spacing: -1px;
+}
+
+.container {
+  display: flex;
+  gap: var(--space-3xl);
+  flex: 1;
+  min-height: 0;
+}
+
+.mainArea {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  min-width: 0;
+}
+
+.sideArea {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.docSelector {
+  background-color: transparent;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.docSelector h3 {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.chip {
+  background-color: transparent;
+  border: 1px solid var(--border-default);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.chip:hover {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.chipSelected {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--text-inverse);
+}
+
+.chipSelected:hover {
+  background-color: var(--text-primary);
+}
+
+.noDocs {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.agentToggle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.agentToggle label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+}
+
+.chatArea {
+  flex: 1;
+  background-color: transparent;
+  border: 1px solid var(--border-default);
+  border-top: 8px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.emptyChat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.message {
+  max-width: 85%;
+}
+
+.user {
+  align-self: flex-end;
+}
+
+.user .messageContent {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  padding: var(--space-lg);
+  border-radius: 0;
+}
+
+.assistant {
+  align-self: flex-start;
+}
+
+.assistant .messageContent {
+  background-color: transparent;
+  color: var(--text-primary);
+  padding: var(--space-lg);
+  border: 1px solid var(--border-default);
+  border-left: 4px solid var(--color-primary);
+  line-height: 1.8;
+}
+
+.system {
+  align-self: center;
+  text-align: center;
+}
+
+.system .messageContent {
+  color: var(--text-inverse);
+  font-size: 13px;
+  background-color: var(--color-danger);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.messageContent p {
+  margin-bottom: var(--space-md);
+  color: inherit;
+}
+
+.messageContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* Used via dangerouslySetInnerHTML */
+:global(.citation-marker) {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.8em;
+  cursor: pointer;
+  padding: 0 4px;
+  vertical-align: super;
+}
+
+.inputArea {
+  display: flex;
+  padding: var(--space-lg);
+  border-top: 1px solid var(--border-default);
+  background-color: transparent;
+  gap: var(--space-md);
+}
+
+.input {
+  flex: 1;
+  padding: var(--space-md);
+  border: 1px solid var(--border-default);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  border-width: 2px;
+  padding: calc(var(--space-md) - 1px);
+}
+
+.input:disabled {
+  background-color: var(--bg-hover);
+  cursor: not-allowed;
+}
+
+.sendBtn {
+  min-width: 120px;
+}
