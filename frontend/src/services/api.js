@@ -4,7 +4,7 @@
  * Handles errors gracefully and returns parsed JSON.
  */
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 async function fetchWithHandler(url, options = {}) {
   try {
