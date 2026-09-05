@@ -17,6 +17,37 @@ The system operates on a decoupled client-server architecture:
 * **Backend:** A FastAPI application orchestrating document processing, optical character recognition for scanned inputs, and semantic chunking. It utilizes ChromaDB for vector storage and coordinates inference through highly constrained LLM prompts to enforce citation rules.
 * **Frontend:** A React application providing a streamlined interface for document management, claim verification, and data export functionalities.
 
+## Tech Stack
+
+* **Frontend:** React, Vite
+* **Backend:** Python, FastAPI
+* **Database:** ChromaDB (Vector Store), SQLite
+* **Deployment:** Docker, Docker Compose
+
+## Folder Structure
+
+```text
+ResearchLens/
+├── backend/                  # FastAPI backend application
+│   ├── app/                  # Application code
+│   │   ├── api/              # API routes
+│   │   ├── core/             # Core configuration and database setup
+│   │   ├── models/           # Data models
+│   │   ├── services/         # Business logic (LLM, PDF, Retrieval, etc.)
+│   │   ├── tests/            # Test cases
+│   │   └── workflows/        # Complex workflows and orchestrations
+│   ├── Dockerfile            # Backend Docker configuration
+│   └── requirements.txt      # Python dependencies
+├── frontend/                 # React frontend application
+│   ├── public/               # Static assets
+│   ├── src/                  # React components, pages, and services
+│   ├── Dockerfile            # Frontend Docker configuration
+│   ├── package.json          # Node.js dependencies
+│   └── vite.config.js        # Vite configuration
+├── docker-compose.yml        # Multi-container orchestration
+└── README.md                 # Project documentation
+```
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
