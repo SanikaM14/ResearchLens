@@ -1,36 +1,9 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Optional
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 import time
 
-app = FastAPI(docs_url=None, redoc_url=None)
-
-# Allow CORS for local testing if needed
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Mock Data Models
-class QueryRequest(BaseModel):
-    query: str
-    document_ids: List[str]
-    use_agent: bool = False
-
-class AnalysisRequest(BaseModel):
-    document_id: str
-
-class CompareRequest(BaseModel):
-    document_ids: List[str]
-    question: str
-
-class ClaimVerifyRequest(BaseModel):
-    document_id: str
-    claim: str
+app = Flask(__name__)
+CORS(app)
 
 # MOCK DATA
 MOCK_DOCUMENT = {
@@ -51,33 +24,34 @@ MOCK_CITATION = {
     "relevance_score": 0.95
 }
 
-@app.get("/api/health")
+@app.route("/api/health", methods=["GET"])
 def health_check():
-    return {"status": "ok", "mode": "presentation-mock"}
+    return jsonify({"status": "ok", "mode": "presentation-mock"})
 
-@app.get("/api/documents")
+@app.route("/api/documents", methods=["GET"])
 def get_documents():
-    return {"documents": [MOCK_DOCUMENT], "total": 1}
+    return jsonify({"documents": [MOCK_DOCUMENT], "total": 1})
 
-@app.get("/api/documents/{doc_id}")
-def get_document(doc_id: str):
-    return MOCK_DOCUMENT
+@app.route("/api/documents/<doc_id>", methods=["GET"])
+def get_document(doc_id):
+    return jsonify(MOCK_DOCUMENT)
 
-@app.post("/api/research/query")
-def mock_query(req: QueryRequest):
-    time.sleep(1) # Simulate thinking
-    return {
+@app.route("/api/research/query", methods=["POST"])
+def mock_query():
+    data = request.json or {}
+    time.sleep(1)
+    return jsonify({
         "answer": "Based on the provided research, Agile methodology significantly impacts team performance. The study demonstrates a 47% increase in deployment frequency and a 22% reduction in critical defects following Agile adoption.",
         "citations": [MOCK_CITATION],
         "evidence_sufficient": True,
-        "query": req.query,
+        "query": data.get("query", ""),
         "processing_time_ms": 1024.5
-    }
+    })
 
-@app.post("/api/research/analyze")
-def mock_analyze(req: AnalysisRequest):
+@app.route("/api/research/analyze", methods=["POST"])
+def mock_analyze():
     time.sleep(1.5)
-    return {
+    return jsonify({
         "document_name": MOCK_DOCUMENT["original_name"],
         "sections": [
             {
@@ -102,35 +76,37 @@ def mock_analyze(req: AnalysisRequest):
             {"metric": "Sample Size", "value": "50", "context": "Enterprise teams tracked", "page": 5, "section": "Methodology"}
         ],
         "processing_time_ms": 1540.2
-    }
+    })
 
-@app.post("/api/research/compare")
-def mock_compare(req: CompareRequest):
+@app.route("/api/research/compare", methods=["POST"])
+def mock_compare():
     time.sleep(1)
-    return {
+    return jsonify({
         "answer": "Both papers agree that Agile improves deployment metrics, but they differ on the impact of defect rates. Paper A shows a 22% reduction in defects, whereas Paper B argues that defect rates remain stable but are caught earlier in the lifecycle.",
         "per_paper_evidence": {
             MOCK_DOCUMENT["original_name"]: [MOCK_CITATION]
         },
         "comparison_table": "| Metric | Paper A (Study) | Paper B (Review) |\n|---|---|---|\n| Deployment Speed | +47% | +35% |\n| Defect Rate | -22% | No change |\n| Team Satisfaction | +18% | +25% |",
         "processing_time_ms": 1100.0
-    }
+    })
 
-@app.post("/api/research/verify-claim")
-def mock_verify(req: ClaimVerifyRequest):
+@app.route("/api/research/verify-claim", methods=["POST"])
+def mock_verify():
+    data = request.json or {}
+    claim = data.get("claim", "")
     time.sleep(1)
-    return {
+    return jsonify({
         "verdict": "SUPPORTED",
-        "explanation": f"The claim that '{req.claim}' is strongly supported by the text. The empirical study explicitly states that deployment frequency increased by 47% across the 50 tracked enterprise teams.",
+        "explanation": f"The claim that '{claim}' is strongly supported by the text. The empirical study explicitly states that deployment frequency increased by 47% across the 50 tracked enterprise teams.",
         "supporting_evidence": [MOCK_CITATION],
         "contradicting_evidence": [],
         "processing_time_ms": 950.5
-    }
+    })
 
-@app.post("/api/research/podcast")
-def mock_podcast(req: AnalysisRequest):
+@app.route("/api/research/podcast", methods=["POST"])
+def mock_podcast():
     time.sleep(2)
-    return {
+    return jsonify({
         "document_name": MOCK_DOCUMENT["original_name"],
         "script": [
             {"speaker": "Host 1", "text": "Welcome back! Today we are looking at a fascinating 2026 study on Agile Methodology."},
@@ -141,4 +117,4 @@ def mock_podcast(req: AnalysisRequest):
             {"speaker": "Host 2", "text": "So it's a long-term investment. Very interesting!"}
         ],
         "processing_time_ms": 2100.0
-    }
+    })
